@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
+import { CommonModule, AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 
 import { clearUser, submitUser } from '../store/user.actions';
@@ -10,7 +10,7 @@ import { selectLastUpdated, selectSubmittedUser } from '../store/user.selectors'
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe],
+  imports: [CommonModule, ReactiveFormsModule, AsyncPipe],
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
