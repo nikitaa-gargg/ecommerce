@@ -9,6 +9,7 @@ jobs:
   build-deploy:
 
     runs-on: ubuntu-latest
+    environment: dev
 
     steps:
 
@@ -18,14 +19,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24.15.0
+          node-version: 24
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Build Angular
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Setup SSH
         run: |
@@ -33,18 +33,17 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Add EC2 Host
+      - name: Add Host
         run: |
           ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Deploy
         run: |
           rsync -avz \
-          dist/ \
-          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.DEPLOY_PATH }}
+            dist/ \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.DEPLOY_PATH }}
 
       - name: Restart Nginx
         run: |
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-          sudo systemctl restart nginx
-          "
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+          "sudo systemctl restart nginx"
